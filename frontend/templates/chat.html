@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<!--
+  CareerAI - AI Career Chatbot Page
+  ===================================
+  Interactive chat interface with the AI career mentor.
+  Supports conversation history, markdown-like formatting.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Career Mentor — CareerAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="/static/css/style.css" rel="stylesheet">
+  <style>
+    body { background: #030712; color: #f1f5f9; font-family: 'Inter', sans-serif; overflow: hidden; }
+    .chat-layout { display: flex; height: 100vh; padding-top: 64px; }
+    .chat-sidebar { width: 280px; background: #0d1117; border-right: 1px solid #1e293b; padding: 1.5rem; flex-shrink: 0; overflow-y: auto; }
+    .chat-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .chat-header { background: #0d1117; border-bottom: 1px solid #1e293b; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; }
+    .chat-input-area { border-top: 1px solid #1e293b; padding: 1rem 1.5rem; background: #0d1117; }
+    .chat-input-wrap { display: flex; gap: 0.5rem; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 0.5rem; }
+    .chat-input { flex: 1; background: transparent; border: none; color: #f1f5f9; font-size: 0.9rem; resize: none; outline: none; font-family: 'Inter', sans-serif; max-height: 120px; padding: 0.3rem 0.5rem; }
+    .chat-send-btn { background: linear-gradient(135deg,#3b82f6,#6366f1); border: none; color: white; border-radius: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
+    .chat-send-btn:hover { opacity: 0.9; transform: scale(1.05); }
+    .chat-send-btn:disabled { opacity: 0.4; transform: none; }
+    .msg-wrap { display: flex; gap: 0.75rem; max-width: 85%; }
+    .msg-wrap.user { align-self: flex-end; flex-direction: row-reverse; }
+    .msg-wrap.assistant { align-self: flex-start; }
+    .msg-avatar { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; }
+    .msg-avatar.user-av { background: linear-gradient(135deg,#7c3aed,#3b82f6); }
+    .msg-avatar.ai-av { background: linear-gradient(135deg,#3b82f6,#06b6d4); }
+    .msg-bubble { padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.88rem; line-height: 1.6; }
+    .msg-wrap.user .msg-bubble { background: linear-gradient(135deg,#7c3aed,#6366f1); color: white; border-radius: 12px 4px 12px 12px; }
+    .msg-wrap.assistant .msg-bubble { background: #0f172a; border: 1px solid #1e293b; color: #f1f5f9; border-radius: 4px 12px 12px 12px; }
+    .msg-bubble strong { color: #60a5fa; }
+    .msg-bubble a { color: #34d399; }
+    .msg-bubble ul { padding-left: 1.2rem; margin: 0.5rem 0; }
+    .msg-bubble li { margin-bottom: 0.25rem; }
+    .quick-prompt { background: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 0.5rem 0.8rem; font-size: 0.8rem; color: #93c5fd; cursor: pointer; transition: 0.2s; text-align: left; width: 100%; margin-bottom: 0.5rem; }
+    .quick-prompt:hover { border-color: #3b82f6; background: rgba(59,130,246,0.1); }
+    .typing-indicator { display: flex; gap: 4px; padding: 0.8rem 1rem; }
+    .typing-dot { width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; animation: typing 1.2s infinite; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing { 0%, 60%, 100% { transform: scale(0.7); opacity: 0.5; } 30% { transform: scale(1); opacity: 1; } }
+    .model-badge { font-size: 0.7rem; background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); color: #60a5fa; padding: 0.1rem 0.5rem; border-radius: 20px; }
+    @media (max-width: 768px) { .chat-sidebar { display: none; } }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top glass-nav">
+  <div class="container-fluid px-3">
+    <a class="navbar-brand fw-bold fs-4" href="/">
+      <span class="brand-icon">🧠</span> Career<span class="text-gradient">AI</span>
+    </a>
+    <div class="ms-auto d-flex gap-2">
+      <a href="/dashboard" class="btn btn-outline-light btn-sm">Dashboard</a>
+      <button class="btn btn-outline-light btn-sm" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<div class="chat-layout">
+  <!-- Sidebar: Quick prompts and tips -->
+  <aside class="chat-sidebar">
+    <h6 class="fw-semibold mb-3 text-muted small text-uppercase">Quick Questions</h6>
+    <button class="quick-prompt" onclick="sendQuickPrompt(this.textContent)">How do I learn Python for ML?</button>
+    <button class="quick-prompt" onclick="sendQuickPrompt(this.textContent)">What skills do I need for Data Science?</button>
+    <button class="quick-prompt" onclick="sendQuickPrompt(this.textContent)">How long does it take to learn MLOps?</button>
+    <button class="quick-prompt" onclick="sendQuickPrompt(this.textContent)">Best resources for Deep Learning?</button>
+    <button class="quick-prompt" onclick="sendQuickPrompt(this.textContent)">How to build a strong portfolio?</button>
+    <button class="quick-prompt" onclick="sendQuickPrompt(this.textContent)">How to negotiate my first tech salary?</button>
+    <button class="quick-prompt" onclick="sendQuickPrompt(this.textContent)">Difference between ML and Data Science?</button>
+    <button class="quick-prompt" onclick="sendQuickPrompt(this.textContent)">How to prepare for technical interviews?</button>
+
+    <hr style="border-color:#1e293b; margin: 1.5rem 0">
+    <button class="btn btn-outline-secondary btn-sm w-100" onclick="clearChat()">
+      <i class="bi bi-trash me-1"></i> Clear Chat
+    </button>
+    <p class="text-muted small mt-3 mb-0">💡 The AI mentor uses your career context to give personalized advice.</p>
+  </aside>
+
+  <!-- Main Chat -->
+  <div class="chat-main">
+    <div class="chat-header">
+      <div style="width:40px;height:40px;background:linear-gradient(135deg,#3b82f6,#06b6d4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem">🤖</div>
+      <div>
+        <div class="fw-semibold">CareerAI Mentor</div>
+        <div class="text-muted small">Your personal AI career advisor <span class="model-badge ms-1" id="model-info">AI</span></div>
+      </div>
+      <div class="ms-auto d-flex align-items-center gap-2">
+        <div style="width:8px;height:8px;background:#34d399;border-radius:50%"></div>
+        <span class="text-muted small">Online</span>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chat-messages">
+      <!-- Initial greeting inserted by JS -->
+    </div>
+
+    <div class="chat-input-area">
+      <div class="chat-input-wrap">
+        <textarea class="chat-input" id="chat-input" rows="1" placeholder="Ask about skills, career paths, learning resources..." 
+          onkeydown="handleKeyDown(event)" oninput="autoResize(this)"></textarea>
+        <button class="chat-send-btn" id="send-btn" onclick="sendMessage()" title="Send (Enter)">
+          <i class="bi bi-send-fill"></i>
+        </button>
+      </div>
+      <p class="text-muted small mt-2 mb-0 text-center">Press <kbd style="background:#1e293b;border:1px solid #334155;color:#94a3b8;border-radius:4px;padding:0 4px">Enter</kbd> to send · <kbd style="background:#1e293b;border:1px solid #334155;color:#94a3b8;border-radius:4px;padding:0 4px">Shift+Enter</kbd> for new line</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/app.js"></script>
+<script>
+// Chat page JS
+requireAuth();
+
+const conversationHistory = [];
+
+function formatMessage(text) {
+  // Convert **bold**, bullet points, and URLs to HTML
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^• /gm, '• ')
+    .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>')
+    .replace(/\n/g, '<br>');
+}
+
+function addMessage(role, content, model = '') {
+  const wrap = document.createElement('div');
+  wrap.className = `msg-wrap ${role}`;
+  const avatar = role === 'user'
+    ? `<div class="msg-avatar user-av">👤</div>`
+    : `<div class="msg-avatar ai-av">🤖</div>`;
+  wrap.innerHTML = `${avatar}<div class="msg-bubble">${formatMessage(content)}</div>`;
+  document.getElementById('chat-messages').appendChild(wrap);
+  scrollToBottom();
+  return wrap;
+}
+
+function addTypingIndicator() {
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-wrap assistant';
+  wrap.id = 'typing-indicator';
+  wrap.innerHTML = `
+    <div class="msg-avatar ai-av">🤖</div>
+    <div class="msg-bubble"><div class="typing-indicator">
+      <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+    </div></div>`;
+  document.getElementById('chat-messages').appendChild(wrap);
+  scrollToBottom();
+}
+
+function removeTypingIndicator() {
+  const el = document.getElementById('typing-indicator');
+  if (el) el.remove();
+}
+
+function scrollToBottom() {
+  const msgs = document.getElementById('chat-messages');
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const message = input.value.trim();
+  if (!message) return;
+  
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
+  
+  addMessage('user', message);
+  conversationHistory.push({ role: 'user', content: message });
+  addTypingIndicator();
+
+  try {
+    const res = await apiRequest('/api/chat', {
+      method: 'POST',
+      body: JSON.stringify({ message, history: conversationHistory.slice(-8) })
+    });
+    const data = await res.json();
+    removeTypingIndicator();
+    addMessage('assistant', data.reply, data.model);
+    conversationHistory.push({ role: 'assistant', content: data.reply });
+    if (data.model) document.getElementById('model-info').textContent = data.model;
+  } catch (e) {
+    removeTypingIndicator();
+    addMessage('assistant', '⚠️ Connection error. Please check your API keys and try again.');
+  } finally {
+    document.getElementById('send-btn').disabled = false;
+    input.focus();
+  }
+}
+
+function sendQuickPrompt(text) {
+  document.getElementById('chat-input').value = text;
+  sendMessage();
+}
+
+function handleKeyDown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function clearChat() {
+  conversationHistory.length = 0;
+  document.getElementById('chat-messages').innerHTML = '';
+  addWelcomeMessage();
+}
+
+function addWelcomeMessage() {
+  const user = getUser();
+  const name = user ? user.name.split(' ')[0] : 'there';
+  addMessage('assistant', `👋 Hi ${name}! I'm your **CareerAI Mentor** — here to help you navigate your tech career journey.
+
+Here's what I can help with:
+• 🎯 **Career path advice** — which role suits you best
+• 📚 **Learning resources** — courses, books, tools
+• 🔧 **Skill gap analysis** — what to learn next
+• 💼 **Interview preparation** — tips and practice
+• 🗺️ **Roadmap planning** — personalized study plans
+
+What would you like to know today?`);
+}
+
+// Initialize
+addWelcomeMessage();
+document.getElementById('chat-input').focus();
+</script>
+</body>
+</html>
