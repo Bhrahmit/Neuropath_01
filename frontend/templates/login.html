@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<!--
+  CareerAI - Login Page (login.html)
+  ====================================
+  User authentication page with JWT-based login.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — CareerAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body class="auth-body">
+
+<div class="auth-bg"></div>
+
+<div class="container min-vh-100 d-flex align-items-center justify-content-center">
+  <div class="row w-100 justify-content-center">
+    <div class="col-md-5 col-lg-4">
+
+      <!-- Brand -->
+      <div class="text-center mb-4">
+        <a href="/" class="text-decoration-none">
+          <span class="fs-2 fw-bold">🧠 Career<span class="text-gradient">AI</span></span>
+        </a>
+        <p class="text-muted mt-2">Welcome back! Sign in to continue.</p>
+      </div>
+
+      <!-- Card -->
+      <div class="auth-card">
+        <h4 class="fw-semibold mb-4 text-center">Sign In</h4>
+
+        <div id="alert-container"></div>
+
+        <form id="login-form">
+          <div class="mb-3">
+            <label class="form-label">Email Address</label>
+            <div class="input-group">
+              <span class="input-group-text bg-transparent border-end-0">
+                <i class="bi bi-envelope text-muted"></i>
+              </span>
+              <input type="email" class="form-control border-start-0 ps-0" id="email"
+                placeholder="you@example.com" required>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <div class="input-group">
+              <span class="input-group-text bg-transparent border-end-0">
+                <i class="bi bi-lock text-muted"></i>
+              </span>
+              <input type="password" class="form-control border-start-0 ps-0" id="password"
+                placeholder="••••••••" required>
+              <button type="button" class="input-group-text bg-transparent" id="toggle-pass">
+                <i class="bi bi-eye text-muted" id="eye-icon"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100 py-2 mt-2" id="login-btn">
+            <span class="btn-text">Sign In</span>
+            <span class="btn-spinner spinner-border spinner-border-sm ms-2 d-none"></span>
+          </button>
+        </form>
+
+        <hr class="my-4">
+
+        <!-- Demo accounts -->
+        <div class="demo-accounts">
+          <p class="text-muted small text-center mb-3">Or try a demo account:</p>
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary btn-sm flex-fill" onclick="fillDemo('student')">
+              <i class="bi bi-mortarboard me-1"></i>Demo Student
+            </button>
+            <button class="btn btn-outline-secondary btn-sm flex-fill" onclick="fillDemo('recruiter')">
+              <i class="bi bi-briefcase me-1"></i>Demo Recruiter
+            </button>
+          </div>
+        </div>
+
+        <p class="text-center mt-4 mb-0 small">
+          Don't have an account? <a href="/register" class="text-primary fw-semibold">Sign up free</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/app.js"></script>
+<script>
+  const API = window.API_BASE || '';
+
+  // Toggle password visibility
+  document.getElementById('toggle-pass').addEventListener('click', () => {
+    const input = document.getElementById('password');
+    const icon = document.getElementById('eye-icon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.className = 'bi bi-eye-slash text-muted';
+    } else {
+      input.type = 'password';
+      icon.className = 'bi bi-eye text-muted';
+    }
+  });
+
+  // Fill demo credentials
+  function fillDemo(role) {
+    document.getElementById('email').value = role === 'student' ? 'student@demo.com' : 'recruiter@demo.com';
+    document.getElementById('password').value = 'demo1234';
+  }
+
+  // Login form submit
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('login-btn');
+    const spinner = btn.querySelector('.btn-spinner');
+    const text = btn.querySelector('.btn-text');
+
+    btn.disabled = true;
+    spinner.classList.remove('d-none');
+    text.textContent = 'Signing in...';
+
+    try {
+      const res = await fetch(`${API}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: document.getElementById('email').value,
+          password: document.getElementById('password').value
+        })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem('careerai_token', data.access_token);
+        localStorage.setItem('careerai_user', JSON.stringify(data.user));
+        showAlert('Login successful! Redirecting...', 'success');
+        setTimeout(() => {
+          window.location.href = data.user.role === 'recruiter' ? '/recruiter' : '/dashboard';
+        }, 800);
+      } else {
+        showAlert(data.detail || 'Invalid email or password', 'danger');
+      }
+    } catch (err) {
+      showAlert('Connection error. Please try again.', 'danger');
+    } finally {
+      btn.disabled = false;
+      spinner.classList.add('d-none');
+      text.textContent = 'Sign In';
+    }
+  });
+
+  function showAlert(msg, type) {
+    document.getElementById('alert-container').innerHTML = `
+      <div class="alert alert-${type} alert-dismissible fade show py-2" role="alert">
+        ${msg}
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>
+      </div>`;
+  }
+
+  // Redirect if already logged in
+  if (localStorage.getItem('careerai_token')) {
+    const user = JSON.parse(localStorage.getItem('careerai_user') || '{}');
+    window.location.href = user.role === 'recruiter' ? '/recruiter' : '/dashboard';
+  }
+</script>
+</body>
+</html>

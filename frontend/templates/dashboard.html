@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<!--
+  CareerAI - Student Dashboard (dashboard.html)
+  ===============================================
+  Full student dashboard:
+  - Resume upload and skill extraction
+  - Career goal selection
+  - Skill gap analysis with Chart.js visualization
+  - Learning roadmap display
+  - AI Chatbot sidebar
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard — CareerAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="/static/css/style.css" rel="stylesheet">
+  <link href="/static/css/dashboard.css" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <span class="brand-icon">🧠</span> Career<span class="text-gradient">AI</span>
+  </div>
+  <nav class="sidebar-nav">
+    <a class="nav-item active" href="#" onclick="showSection('overview')">
+      <i class="bi bi-grid"></i><span>Overview</span>
+    </a>
+    <a class="nav-item" href="#" onclick="showSection('resume')">
+      <i class="bi bi-file-earmark-person"></i><span>Resume & Skills</span>
+    </a>
+    <a class="nav-item" href="#" onclick="showSection('gap-analysis')">
+      <i class="bi bi-graph-up-arrow"></i><span>Gap Analysis</span>
+    </a>
+    <a class="nav-item" href="#" onclick="showSection('roadmap')">
+      <i class="bi bi-map"></i><span>Learning Roadmap</span>
+    </a>
+    <a class="nav-item" href="#" onclick="showSection('jobs')">
+      <i class="bi bi-briefcase"></i><span>Browse Jobs</span>
+    </a>
+    <a class="nav-item" href="#" onclick="showSection('chatbot')">
+      <i class="bi bi-chat-dots"></i><span>AI Chatbot</span>
+    </a>
+    <a class="nav-item" href="#" onclick="showSection('analytics')">
+      <i class="bi bi-bar-chart-line"></i><span>Analytics</span>
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-info" id="sidebar-user">
+      <div class="user-avatar" id="user-avatar-text">U</div>
+      <div>
+        <div class="fw-semibold small" id="sidebar-user-name">User</div>
+        <div class="text-muted" style="font-size:0.75rem">Student</div>
+      </div>
+    </div>
+    <button class="btn btn-outline-danger btn-sm w-100 mt-2" onclick="logout()">
+      <i class="bi bi-box-arrow-right me-1"></i>Logout
+    </button>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<main class="main-content" id="main-content">
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <button class="btn btn-sm btn-outline-secondary d-lg-none" onclick="toggleSidebar()">
+      <i class="bi bi-list"></i>
+    </button>
+    <div class="topbar-title" id="page-title">Overview</div>
+    <div class="topbar-actions">
+      <span class="text-muted small" id="topbar-greeting">Welcome back!</span>
+    </div>
+  </div>
+
+  <!-- ============ OVERVIEW SECTION ============ -->
+  <section id="section-overview" class="dashboard-section active">
+    <div class="section-header">
+      <h2>Welcome back, <span id="welcome-name" class="text-gradient">Student</span>! 👋</h2>
+      <p class="text-muted">Here's your career progress at a glance</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-icon bg-primary-soft"><i class="bi bi-cpu text-primary"></i></div>
+          <div class="stat-value" id="stat-skills">0</div>
+          <div class="stat-label">Skills Detected</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-icon bg-warning-soft"><i class="bi bi-exclamation-triangle text-warning"></i></div>
+          <div class="stat-value" id="stat-missing">-</div>
+          <div class="stat-label">Skills to Learn</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-icon bg-success-soft"><i class="bi bi-graph-up text-success"></i></div>
+          <div class="stat-value" id="stat-match">-</div>
+          <div class="stat-label">Match Score</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-icon bg-info-soft"><i class="bi bi-map text-info"></i></div>
+          <div class="stat-value" id="stat-months">-</div>
+          <div class="stat-label">Roadmap Months</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="quick-action-card" onclick="showSection('resume')">
+          <div class="qa-icon"><i class="bi bi-upload"></i></div>
+          <h5>Upload Resume</h5>
+          <p class="text-muted">Extract skills automatically</p>
+          <span class="btn btn-primary btn-sm">Get Started</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="quick-action-card" onclick="showSection('gap-analysis')">
+          <div class="qa-icon"><i class="bi bi-target"></i></div>
+          <h5>Analyze Skill Gap</h5>
+          <p class="text-muted">See what's missing</p>
+          <span class="btn btn-warning btn-sm">Analyze Now</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="quick-action-card" onclick="showSection('chatbot')">
+          <div class="qa-icon"><i class="bi bi-chat-dots"></i></div>
+          <h5>Ask AI Mentor</h5>
+          <p class="text-muted">Get instant career advice</p>
+          <span class="btn btn-success btn-sm">Chat Now</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESUME SECTION ============ -->
+  <section id="section-resume" class="dashboard-section">
+    <div class="section-header">
+      <h2>Resume & Skills</h2>
+      <p class="text-muted">Upload your resume and manage your skills</p>
+    </div>
+
+    <div class="row g-4">
+      <!-- Upload Card -->
+      <div class="col-lg-5">
+        <div class="content-card h-100">
+          <h5 class="card-title mb-4"><i class="bi bi-upload me-2 text-primary"></i>Upload Resume</h5>
+          <div class="upload-zone" id="upload-zone" onclick="document.getElementById('resume-file').click()">
+            <div class="upload-icon"><i class="bi bi-cloud-upload"></i></div>
+            <p class="mb-1">Drop your resume here or <strong>click to browse</strong></p>
+            <small class="text-muted">Supports PDF, DOCX, TXT (Max 10MB)</small>
+            <input type="file" id="resume-file" accept=".pdf,.docx,.doc,.txt" class="d-none">
+          </div>
+          <div id="upload-progress" class="mt-3 d-none">
+            <div class="d-flex justify-content-between mb-1">
+              <small>Uploading...</small>
+              <small id="upload-pct">0%</small>
+            </div>
+            <div class="progress">
+              <div class="progress-bar progress-bar-striped progress-bar-animated" id="upload-bar" style="width:0%"></div>
+            </div>
+          </div>
+          <div id="upload-result" class="mt-3"></div>
+        </div>
+      </div>
+
+      <!-- Skills Card -->
+      <div class="col-lg-7">
+        <div class="content-card h-100">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="card-title mb-0"><i class="bi bi-tags me-2 text-success"></i>Your Skills</h5>
+            <button class="btn btn-sm btn-outline-primary" onclick="openAddSkillModal()">
+              <i class="bi bi-plus-circle me-1"></i>Add Manually
+            </button>
+          </div>
+          <div id="skills-container">
+            <div class="text-center text-muted py-5">
+              <i class="bi bi-cpu fs-1 opacity-25"></i>
+              <p class="mt-2">Upload a resume or add skills manually</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GAP ANALYSIS SECTION ============ -->
+  <section id="section-gap-analysis" class="dashboard-section">
+    <div class="section-header">
+      <h2>Skill Gap Analysis</h2>
+      <p class="text-muted">Discover exactly what skills you need for your target career</p>
+    </div>
+
+    <!-- Career Goal Selector -->
+    <div class="content-card mb-4">
+      <div class="row align-items-end g-3">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Select Your Target Career Role</label>
+          <select class="form-select form-select-lg" id="career-goal-select">
+            <option value="">-- Choose a career goal --</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <button class="btn btn-primary btn-lg w-100" onclick="runGapAnalysis()">
+            <i class="bi bi-lightning me-2"></i>Analyze Gap
+          </button>
+        </div>
+        <div class="col-md-3">
+          <button class="btn btn-outline-secondary btn-lg w-100" onclick="generateRoadmapFromGap()">
+            <i class="bi bi-map me-2"></i>Generate Roadmap
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gap Results -->
+    <div id="gap-results" class="d-none">
+      <!-- Match Score Bar -->
+      <div class="row g-4 mb-4">
+        <div class="col-lg-4">
+          <div class="content-card text-center">
+            <div class="match-circle" id="match-circle">
+              <span id="match-pct-display">0%</span>
+            </div>
+            <h5 class="mt-3">Overall Match</h5>
+            <p class="text-muted small" id="match-career-label">for Your Career Goal</p>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="content-card h-100">
+            <h6 class="fw-semibold mb-3">Skill Match Overview</h6>
+            <canvas id="gap-chart" height="180"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <!-- Matched Skills -->
+        <div class="col-md-6">
+          <div class="content-card">
+            <h6 class="fw-semibold mb-3 text-success">
+              <i class="bi bi-check-circle-fill me-2"></i>Skills You Have
+            </h6>
+            <div id="matched-skills-list"></div>
+          </div>
+        </div>
+        <!-- Missing Skills -->
+        <div class="col-md-6">
+          <div class="content-card">
+            <h6 class="fw-semibold mb-3 text-danger">
+              <i class="bi bi-exclamation-circle-fill me-2"></i>Skills to Learn
+            </h6>
+            <div id="missing-skills-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="gap-placeholder" class="text-center py-5 text-muted">
+      <i class="bi bi-graph-up-arrow fs-1 opacity-25"></i>
+      <p class="mt-3">Select a career goal above to see your skill gap analysis</p>
+    </div>
+  </section>
+
+  <!-- ============ ROADMAP SECTION ============ -->
+  <section id="section-roadmap" class="dashboard-section">
+    <div class="section-header">
+      <h2>Learning Roadmap</h2>
+      <p class="text-muted">Your personalized month-by-month learning plan</p>
+    </div>
+
+    <div id="roadmap-container">
+      <div class="text-center py-5 text-muted">
+        <i class="bi bi-map fs-1 opacity-25"></i>
+        <p class="mt-3">Run a gap analysis first, then generate your roadmap</p>
+        <button class="btn btn-primary" onclick="showSection('gap-analysis')">
+          <i class="bi bi-graph-up-arrow me-2"></i>Go to Gap Analysis
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ JOBS SECTION ============ -->
+  <section id="section-jobs" class="dashboard-section">
+    <div class="section-header">
+      <h2>Browse Jobs</h2>
+      <p class="text-muted">Explore opportunities from top companies</p>
+    </div>
+    <div class="row g-3" id="jobs-list">
+      <div class="col-12 text-center py-5">
+        <div class="spinner-border text-primary"></div>
+        <p class="mt-2 text-muted">Loading jobs...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHATBOT SECTION ============ -->
+  <section id="section-chatbot" class="dashboard-section">
+    <div class="section-header">
+      <h2>AI Career Mentor</h2>
+      <p class="text-muted">Get expert career guidance, 24/7</p>
+    </div>
+
+    <div class="chat-container">
+      <div class="chat-messages" id="chat-messages">
+        <!-- Welcome message -->
+        <div class="chat-message bot-message">
+          <div class="message-avatar bot-avatar"><i class="bi bi-robot"></i></div>
+          <div class="message-bubble">
+            <p class="mb-1">👋 Hi! I'm your AI Career Mentor.</p>
+            <p class="mb-2">I can help you with:</p>
+            <div class="quick-replies">
+              <button onclick="sendQuickMessage('How do I learn MLOps?')">🚀 Learn MLOps</button>
+              <button onclick="sendQuickMessage('What skills do Data Scientists need?')">📊 Data Science Skills</button>
+              <button onclick="sendQuickMessage('How to prepare for tech interviews?')">💼 Interview Prep</button>
+              <button onclick="sendQuickMessage('Give me Python learning resources')">🐍 Python Resources</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <div class="typing-indicator d-none" id="typing-indicator">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" class="chat-input" id="chat-input"
+            placeholder="Ask anything about your career..." 
+            onkeydown="if(event.key==='Enter')sendMessage()">
+          <button class="chat-send-btn" id="send-btn" onclick="sendMessage()">
+            <i class="bi bi-send-fill"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-secondary ms-1" onclick="clearChat()" title="Clear chat">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ANALYTICS SECTION ============ -->
+  <section id="section-analytics" class="dashboard-section">
+    <div class="section-header">
+      <h2>Platform Analytics</h2>
+      <p class="text-muted">Insights on skills, careers, and platform trends</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="content-card">
+          <h6 class="fw-semibold mb-3">Top In-Demand Skills</h6>
+          <canvas id="skills-chart" height="250"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="content-card">
+          <h6 class="fw-semibold mb-3">Career Goal Distribution</h6>
+          <canvas id="career-chart" height="250"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="content-card">
+          <h6 class="fw-semibold mb-3">Match Score Distribution</h6>
+          <canvas id="match-chart" height="250"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="content-card">
+          <h6 class="fw-semibold mb-3">Platform Overview</h6>
+          <div class="row g-3" id="overview-stats">
+            <div class="col-6">
+              <div class="mini-stat">
+                <i class="bi bi-mortarboard text-primary fs-3"></i>
+                <div class="mini-stat-value" id="total-students">-</div>
+                <div class="mini-stat-label">Students</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="mini-stat">
+                <i class="bi bi-briefcase text-warning fs-3"></i>
+                <div class="mini-stat-value" id="total-jobs">-</div>
+                <div class="mini-stat-label">Active Jobs</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="mini-stat">
+                <i class="bi bi-people text-success fs-3"></i>
+                <div class="mini-stat-value" id="total-recruiters">-</div>
+                <div class="mini-stat-label">Recruiters</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="mini-stat">
+                <i class="bi bi-map text-info fs-3"></i>
+                <div class="mini-stat-value" id="total-roadmaps">-</div>
+                <div class="mini-stat-label">Roadmaps</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Add Skill Modal -->
+<div class="modal fade" id="addSkillModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Add Skills Manually</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Career Goal</label>
+          <select class="form-select" id="modal-career-goal">
+            <option value="">-- Select career goal --</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Your Skills</label>
+          <textarea class="form-control" id="manual-skills-input" rows="4"
+            placeholder="Enter skills separated by commas&#10;e.g. Python, Machine Learning, SQL, Docker"></textarea>
+          <div class="form-text">Tip: Be specific with skill names</div>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="saveManualSkills()">Save Skills</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="/static/js/app.js"></script>
+<script src="/static/js/dashboard.js"></script>
+</body>
+</html>

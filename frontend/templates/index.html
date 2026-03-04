@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<!--
+  CareerAI - Landing Page (index.html)
+  =====================================
+  Main landing page showcasing platform features.
+  Uses Bootstrap 5 + custom CSS for modern design.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareerAI — Your AI Career Mentor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top glass-nav">
+  <div class="container">
+    <a class="navbar-brand fw-bold fs-4" href="/">
+      <span class="brand-icon">🧠</span> Career<span class="text-gradient">AI</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center gap-2">
+        <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="#how-it-works">How it Works</a></li>
+        <li class="nav-item"><a class="nav-link" href="#testimonials">Stories</a></li>
+        <li class="nav-item" id="nav-dashboard" style="display:none">
+          <a class="nav-link" href="/dashboard" id="nav-dashboard-link">Dashboard</a>
+        </li>
+        <li class="nav-item" id="nav-logout" style="display:none">
+          <button class="btn btn-outline-light btn-sm" onclick="logout()">Logout</button>
+        </li>
+        <li class="nav-item" id="nav-login">
+          <a href="/login" class="btn btn-outline-light btn-sm">Login</a>
+        </li>
+        <li class="nav-item" id="nav-signup">
+          <a href="/register" class="btn btn-primary btn-sm px-4">Get Started Free</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-bg-animation"></div>
+  <div class="container position-relative">
+    <div class="row align-items-center min-vh-100">
+      <div class="col-lg-6">
+        <div class="hero-badge mb-4">
+          <span class="badge-dot"></span>
+          AI-Powered Career Intelligence Platform
+        </div>
+        <h1 class="hero-title">
+          Discover Your<br>
+          <span class="text-gradient">Perfect Career Path</span><br>
+          with AI Precision
+        </h1>
+        <p class="hero-subtitle mt-4 mb-5">
+          Upload your resume. Get instant skill analysis, a personalized learning roadmap, 
+          and connect with top recruiters — all powered by advanced AI.
+        </p>
+        <div class="d-flex gap-3 flex-wrap">
+          <a href="/register" class="btn btn-primary btn-lg px-5 hero-cta">
+            <i class="bi bi-rocket-takeoff me-2"></i>Start Your Journey
+          </a>
+          <a href="#how-it-works" class="btn btn-outline-light btn-lg px-4">
+            <i class="bi bi-play-circle me-2"></i>See How it Works
+          </a>
+        </div>
+        <!-- Stats Row -->
+        <div class="hero-stats mt-5">
+          <div class="stat-item">
+            <span class="stat-number" data-target="5000">0</span><span>+</span>
+            <span class="stat-label">Students Guided</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number" data-target="92">0</span><span>%</span>
+            <span class="stat-label">Match Accuracy</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number" data-target="250">0</span><span>+</span>
+            <span class="stat-label">Companies Hiring</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 d-none d-lg-block">
+        <div class="hero-visual">
+          <div class="dashboard-preview">
+            <div class="preview-header">
+              <div class="preview-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="preview-title">CareerAI Dashboard</span>
+            </div>
+            <div class="preview-body">
+              <div class="skill-match-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span class="fw-semibold">ML Engineer Match</span>
+                  <span class="badge bg-success">82%</span>
+                </div>
+                <div class="match-bar">
+                  <div class="match-fill" style="width: 82%"></div>
+                </div>
+                <div class="skill-tags mt-3">
+                  <span class="skill-tag matched">Python</span>
+                  <span class="skill-tag matched">SQL</span>
+                  <span class="skill-tag matched">pandas</span>
+                  <span class="skill-tag missing">Docker</span>
+                  <span class="skill-tag missing">MLOps</span>
+                </div>
+              </div>
+              <div class="roadmap-preview mt-3">
+                <div class="roadmap-step active">
+                  <div class="step-dot"></div>
+                  <div>
+                    <div class="step-month">Month 1</div>
+                    <div class="step-text">Advanced Python & Stats</div>
+                  </div>
+                </div>
+                <div class="roadmap-step">
+                  <div class="step-dot"></div>
+                  <div>
+                    <div class="step-month">Month 2</div>
+                    <div class="step-text">Deep Learning Fundamentals</div>
+                  </div>
+                </div>
+                <div class="roadmap-step">
+                  <div class="step-dot"></div>
+                  <div>
+                    <div class="step-month">Month 3</div>
+                    <div class="step-text">MLOps & Docker Deployment</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Floating Cards -->
+          <div class="float-card float-card-1">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            Skills Extracted: 12
+          </div>
+          <div class="float-card float-card-2">
+            <i class="bi bi-lightning-fill text-warning me-2"></i>
+            Roadmap Ready!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 features-section" id="features">
+  <div class="container py-5">
+    <div class="text-center mb-5">
+      <span class="section-badge">What We Offer</span>
+      <h2 class="section-title mt-2">Everything You Need to <span class="text-gradient">Succeed</span></h2>
+      <p class="section-subtitle">From resume analysis to job matching — we've got your entire career journey covered</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="bi bi-file-earmark-person"></i>
+          </div>
+          <h4>Smart Resume Analysis</h4>
+          <p>Upload PDF or DOCX. Our AI extracts all your skills automatically with 95% accuracy using NLP.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="bi bi-graph-up-arrow"></i>
+          </div>
+          <h4>Skill Gap Analysis</h4>
+          <p>Compare your skills against any target career role and instantly see exactly what you're missing.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="bi bi-map"></i>
+          </div>
+          <h4>Personalized Roadmap</h4>
+          <p>Get a month-by-month learning plan with curated resources to bridge your skill gaps efficiently.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="bi bi-people"></i>
+          </div>
+          <h4>Recruiter Matching</h4>
+          <p>Recruiters post jobs and our AI ranks all candidates by semantic skill match scores instantly.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="bi bi-chat-square-dots"></i>
+          </div>
+          <h4>AI Career Chatbot</h4>
+          <p>Ask anything about careers, skills, or learning resources. Get expert guidance 24/7.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="bi bi-bar-chart-line"></i>
+          </div>
+          <h4>Visual Analytics</h4>
+          <p>Beautiful dashboards showing skill trends, match distributions, and career insights with Chart.js.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it Works -->
+<section class="py-5 how-section" id="how-it-works">
+  <div class="container py-5">
+    <div class="text-center mb-5">
+      <span class="section-badge">Simple Process</span>
+      <h2 class="section-title mt-2">How <span class="text-gradient">CareerAI</span> Works</h2>
+    </div>
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="steps-list">
+          <div class="step-item" data-step="1">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h5>Upload Your Resume</h5>
+              <p>Simply upload your PDF or DOCX resume. Our AI reads it in seconds.</p>
+            </div>
+          </div>
+          <div class="step-item" data-step="2">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h5>Choose Your Career Goal</h5>
+              <p>Select from 10+ career paths like ML Engineer, Data Scientist, Full Stack Dev and more.</p>
+            </div>
+          </div>
+          <div class="step-item" data-step="3">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h5>Get Your Gap Analysis</h5>
+              <p>See exactly which skills you have, which you're missing, and your match percentage.</p>
+            </div>
+          </div>
+          <div class="step-item" data-step="4">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h5>Follow Your Roadmap</h5>
+              <p>Execute a personalized monthly plan with curated learning resources to fill gaps fast.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="how-visual">
+          <div class="process-card">
+            <div class="process-header">
+              <i class="bi bi-person-badge me-2"></i>For Students
+            </div>
+            <div class="process-list">
+              <div class="process-item"><i class="bi bi-upload text-primary"></i> Upload Resume</div>
+              <div class="process-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="process-item"><i class="bi bi-cpu text-warning"></i> AI Skill Extraction</div>
+              <div class="process-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="process-item"><i class="bi bi-graph-up text-success"></i> Gap Analysis</div>
+              <div class="process-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="process-item"><i class="bi bi-map text-info"></i> Learning Roadmap</div>
+            </div>
+          </div>
+          <div class="process-card mt-3">
+            <div class="process-header">
+              <i class="bi bi-briefcase me-2"></i>For Recruiters
+            </div>
+            <div class="process-list">
+              <div class="process-item"><i class="bi bi-plus-circle text-primary"></i> Post Job</div>
+              <div class="process-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="process-item"><i class="bi bi-stars text-warning"></i> AI Candidate Ranking</div>
+              <div class="process-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="process-item"><i class="bi bi-person-check text-success"></i> Hire Best Fit</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-5 testimonials-section" id="testimonials">
+  <div class="container py-5">
+    <div class="text-center mb-5">
+      <span class="section-badge">Success Stories</span>
+      <h2 class="section-title mt-2">What Our <span class="text-gradient">Users Say</span></h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="testimonial-card">
+          <div class="stars mb-3">★★★★★</div>
+          <p>"CareerAI showed me exactly what skills I was missing for my ML Engineer dream job. I followed the roadmap and landed an offer in 4 months!"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">RA</div>
+            <div>
+              <strong>Rahul Agarwal</strong>
+              <span>ML Engineer @ TechCorp</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="testimonial-card featured">
+          <div class="stars mb-3">★★★★★</div>
+          <p>"As a recruiter, I used to spend hours screening resumes. CareerAI's matching saved me 80% of that time and surfaces much better candidates."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">SK</div>
+            <div>
+              <strong>Sarah Kim</strong>
+              <span>Senior Recruiter @ StartupX</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="testimonial-card">
+          <div class="stars mb-3">★★★★★</div>
+          <p>"The AI chatbot is incredible — it's like having a mentor available 24/7. It helped me understand which projects to build for my portfolio."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">PM</div>
+            <div>
+              <strong>Priya Mehta</strong>
+              <span>Data Scientist @ Analytics Co.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5">
+  <div class="container py-5 text-center">
+    <h2 class="cta-title">Ready to Accelerate Your Career?</h2>
+    <p class="cta-subtitle mt-3 mb-5">Join thousands of students who've already found their path with CareerAI</p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="/register?role=student" class="btn btn-light btn-lg px-5">
+        <i class="bi bi-mortarboard me-2"></i>I'm a Student
+      </a>
+      <a href="/register?role=recruiter" class="btn btn-outline-light btn-lg px-5">
+        <i class="bi bi-briefcase me-2"></i>I'm a Recruiter
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer py-4">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-4">
+        <span class="fw-bold">🧠 CareerAI</span>
+        <p class="text-muted small mt-1 mb-0">AI-powered career guidance for everyone</p>
+      </div>
+      <div class="col-md-4 text-center">
+        <small class="text-muted">© 2025 CareerAI. Built for student success.</small>
+      </div>
+      <div class="col-md-4 text-end">
+        <a href="/login" class="text-muted me-3 small">Login</a>
+        <a href="/register" class="text-muted small">Sign Up</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/app.js"></script>
+<script>
+  // Animate stats counter
+  document.addEventListener('DOMContentLoaded', () => {
+    const statNumbers = document.querySelectorAll('.stat-number');
+    const animateCount = (el) => {
+      const target = parseInt(el.dataset.target);
+      let count = 0;
+      const increment = target / 60;
+      const timer = setInterval(() => {
+        count += increment;
+        if (count >= target) { count = target; clearInterval(timer); }
+        el.textContent = Math.floor(count);
+      }, 25);
+    };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) animateCount(e.target); });
+    });
+    statNumbers.forEach(el => observer.observe(el));
+  });
+
+  // Check auth state for nav
+  const token = localStorage.getItem('careerai_token');
+  const user = JSON.parse(localStorage.getItem('careerai_user') || 'null');
+  if (token && user) {
+    document.getElementById('nav-login').style.display = 'none';
+    document.getElementById('nav-signup').style.display = 'none';
+    document.getElementById('nav-dashboard').style.display = 'block';
+    document.getElementById('nav-logout').style.display = 'block';
+    const dashLink = document.getElementById('nav-dashboard-link');
+    dashLink.href = user.role === 'recruiter' ? '/recruiter' : '/dashboard';
+    dashLink.textContent = user.role === 'recruiter' ? 'Recruiter Dashboard' : 'My Dashboard';
+  }
+
+  function logout() {
+    localStorage.removeItem('careerai_token');
+    localStorage.removeItem('careerai_user');
+    window.location.href = '/';
+  }
+</script>
+</body>
+</html>
