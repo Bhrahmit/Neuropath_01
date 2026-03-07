@@ -1,0 +1,5 @@
+
+myenv/
+uploads/
+*.dll
+*.pdf
