@@ -7,7 +7,6 @@
   - View all job postings
   - Run AI candidate matching
   - View ranked candidates with scores
-  - Analytics overview
 -->
 <html lang="en">
 <head>
@@ -39,9 +38,6 @@
     </a>
     <a class="nav-item" href="#" onclick="showSection('match-candidates')">
       <i class="bi bi-people"></i><span>Match Candidates</span>
-    </a>
-    <a class="nav-item" href="#" onclick="showSection('analytics')">
-      <i class="bi bi-bar-chart-line"></i><span>Analytics</span>
     </a>
   </nav>
   <div class="sidebar-footer">
@@ -247,34 +243,9 @@
         <h5 class="mb-0" id="candidates-title">Candidates</h5>
         <div class="d-flex gap-2">
           <span class="badge bg-primary" id="candidates-count">0 found</span>
-          <button class="btn btn-sm btn-outline-success" onclick="exportCandidates()">
-            <i class="bi bi-download me-1"></i>Export CSV
-          </button>
         </div>
       </div>
       <div id="candidates-list"></div>
-    </div>
-  </section>
-
-  <!-- ============ ANALYTICS ============ -->
-  <section id="section-analytics" class="dashboard-section">
-    <div class="section-header">
-      <h2>Hiring Analytics</h2>
-      <p class="text-muted">Data-driven insights for better hiring decisions</p>
-    </div>
-    <div class="row g-4">
-      <div class="col-lg-6">
-        <div class="content-card">
-          <h6 class="fw-semibold mb-3">Top Required Skills (Your Jobs)</h6>
-          <canvas id="recruiter-skills-chart" height="250"></canvas>
-        </div>
-      </div>
-      <div class="col-lg-6">
-        <div class="content-card">
-          <h6 class="fw-semibold mb-3">Candidate Match Distribution</h6>
-          <canvas id="recruiter-match-chart" height="250"></canvas>
-        </div>
-      </div>
     </div>
   </section>
 </main>

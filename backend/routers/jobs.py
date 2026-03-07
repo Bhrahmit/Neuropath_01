@@ -128,8 +128,12 @@ def my_jobs(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Get recruiter's own job postings."""
+
+    if current_user.role != "recruiter":
+        raise HTTPException(status_code=403, detail="Only recruiters allowed")
+
     jobs = db.query(Job).filter_by(recruiter_id=current_user.id).all()
+
     return {
         "jobs": [
             {
