@@ -1,51 +1,42 @@
 # ─── CareerAI Requirements ───────────────────────────────────────────────────
-# Install with: pip install -r requirements.txt
-# after installing, run: python -m spacy download en_core_web_sm
 # Core Web Framework
 fastapi==0.111.0
 uvicorn[standard]==0.29.0
-python-multipart==0.0.9        # For file uploads
-aiofiles==23.2.1               # Async file handling
+python-multipart==0.0.9
+aiofiles==23.2.1
 
 # Database
 sqlalchemy==2.0.30
-psycopg2-binary==2.9.9         # PostgreSQL driver
-# For local dev with SQLite: no extra driver needed
 
 # Authentication
-python-jose[cryptography]==3.3.0   # JWT tokens
-passlib[bcrypt]==1.7.4             # Password hashing
-bcrypt==4.0.1                    # bcrypt library (required by passlib)
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
 
 # Resume Parsing
-PyPDF2==3.0.1                  # PDF text extraction
-pdfminer.six==20231228         # Better PDF extraction (fallback)
-python-docx==1.1.0             # DOCX file reading
+PyPDF2==3.0.1
+pdfminer.six==20231228
+python-docx==1.1.0
 
 # NLP & Skill Extraction
-spacy==3.8.2                   # NLP pipeline (3.8.x supports typer>=0.12)
-# Run after install: python -m spacy download en_core_web_sm
+spacy==3.7.4
 
 # Machine Learning & Matching
-scikit-learn==1.4.2            # ML utilities
-sentence-transformers==3.0.1   # Semantic embeddings for better matching
-numpy==1.26.4                  # Numerical computing
+scikit-learn==1.4.2
+numpy==1.26.4
 
-# AI Chatbot (choose one or both)
-google-generativeai==0.7.2     # Google Gemini API
-openai==1.30.1                 # OpenAI GPT API
+# AI Chatbot
+google-generativeai==0.7.2
+openai==1.30.1
 
 # LangChain (optional - for RAG features)
 langchain==0.2.5
 langchain-community==0.2.5
 
-# Vector DB (optional - for RAG)
-faiss-cpu==1.8.0               # Vector similarity search
-
 # Utilities
-python-dotenv==1.0.1           # .env file support
-pydantic==2.7.1                # Data validation (FastAPI uses this)
+python-dotenv==1.0.1
+pydantic==2.7.1
 
 # Development
 pytest==8.2.0
-httpx==0.27.0                  # For testing FastAPI
+httpx==0.27.0
