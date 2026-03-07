@@ -5,6 +5,8 @@ Entry point: initializes app, CORS, static files, routers, and page routes.
 """
 
 import os
+from dotenv import load_dotenv
+load_dotenv()  # Load .env file automatically
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
